@@ -1,0 +1,43 @@
+/* 전체 컨테이너 스타일 */
+.item-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* 마우스를 올릴 때 효과 */
+  .item-container:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* 제목 스타일 */
+  .item-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  /* 설명 텍스트 스타일 */
+  .item-description {
+    color: #555;
+    font-size: 14px;
+  }
+  
+  /* 컨테이너 전체를 스크롤 가능하게 설정 */
+  .item-list-scrollable {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* 각 항목의 간격 */
+  .item {
+    margin-bottom: 10px;
+  }
+  

@@ -1,0 +1,100 @@
+/* 전체 뉴스 페이지 */
+.news-container {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  /* 헤더 */
+  .news-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .news-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: orange;
+    margin: 0;
+    position: absolute;
+    left: 20px; /* 로고는 왼쪽 정렬 */
+  }
+  
+  .news-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: gray;
+    margin: 0 0 10px;
+  }
+  
+  .header-right {
+    position: absolute;
+    right: 20px; /* 사용자 이름은 오른쪽 정렬 */
+  }
+  
+  .header-right .user-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* 콘텐츠 영역 */
+  .news-content {
+    flex: 1;
+    padding: 20px 20px 0;
+  }
+  
+  .news-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .news-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .news-item h3 {
+    font-size: 20px;
+    color: #333;
+    margin: 0 0 10px;
+  }
+  
+  .news-item p {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 10px;
+  }
+  
+  .news-item a {
+    font-size: 16px;
+    color: orange;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px; /* 본문 읽기와 요약 사이 간격 조정 */
+    display: inline-block; /* 간격 조정을 위해 블록 요소처럼 작동 */
+  }
+  
+  .news-item a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 감성 분석 색상 */
+  .news-sentiment {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px; /* 본문 읽기와 간격 추가 */
+  }
+  

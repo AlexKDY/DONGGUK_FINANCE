@@ -1,0 +1,75 @@
+.App {
+  text-align: center;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 4rem 1rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.logo {
+  margin-bottom: 1.5rem; /* 기존 값에서 줄임 */
+  margin-top: -1rem;    /* 위로 약간 올림 */
+}
+
+.logo h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #FFA07A;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button.signup {
+  background: linear-gradient(to right, #fcd34d, #f59e0b);
+  color: white;
+}
+
+.button.signup:hover {
+  background: linear-gradient(to right, #fbbf24, #d97706);
+}
+
+.button.login {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+.button.login:hover {
+  background-color: #d1d5db;
+}
+
+@media (max-width: 640px) {
+  .logo h1 {
+    font-size: 3rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}
