@@ -32,4 +32,7 @@
 | **Backend**   | Flask RESTful API                     |
 
 <br>
+
+## 시연영상 유튜브 링크
+https://youtu.be/dc4pHc_czPM
 <br>
