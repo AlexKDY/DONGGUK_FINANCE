@@ -93,14 +93,18 @@ function Item() {
   const handleNewsPage = () => {
     navigate('/news', { state: { code: item.code } }); // 뉴스 페이지로 이동
   };
-
+  const handleUserClick = () => {
+    navigate('/user'); // User 페이지로 이동
+  };
   return (
     <div className="item-container">
       {/* 헤더 */}
       <header className="item-header">
         <h1 className="item-logo">DGU FINANCE</h1>
         <div className="header-right">
-          <span className="user-name">{userName}님</span>
+        <span className="user-name" onClick={handleUserClick} style={{ cursor: 'pointer' }}>
+            {userName}님
+          </span>
         </div>
       </header>
 

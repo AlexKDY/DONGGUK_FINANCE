@@ -1,4 +1,5 @@
 import os
+from pymongo import MongoClient, errors, ASCENDING
 from pymongo import MongoClient, errors
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -10,38 +11,56 @@ uri = os.environ.get("MONGODB_URI")
 client = MongoClient(uri)
 db = client.get_database(os.environ.get("MONGO_DATABASE"))
 
-# 컬렉션 참조
 item_collection = db["Item"]
 ohlcv_collection = db["OHLCV"]
 fundamental_collection = db["Fundamental"]
+
+
+def ensure_indexes():
+    """Item 및 Fundamental 컬렉션에 대해 unique index 생성"""
+    try:
+        item_collection.create_index(
+            [("code", ASCENDING)],
+            unique=True,
+            partialFilterExpression={"code": {"$exists": True}}
+            )
+        print("Unique index on 'code' field created for Item collection.")
+    except errors.OperationFailure as e:
+        print(f"Index creation failed for Item collection: {e}")
+    except Exception as e:
+        print(f"Unexpected error during index creation for Item collection: {e}")
+
+    try:
+        fundamental_collection.create_index([("code", ASCENDING)], unique=True)
+        print("Unique index on 'code' field created for Fundamental collection.")
+    except errors.OperationFailure as e:
+        print(f"Index creation failed for Fundamental collection: {e}")
+    except Exception as e:
+        print(f"Unexpected error during index creation for Fundamental collection: {e}")
+ensure_indexes()
 
 def convert_unix_to_datetime(unix_timestamp):
     if unix_timestamp:
         return datetime.fromtimestamp(unix_timestamp, timezone.utc).strftime('%Y-%m-%d')
     return None
 
-# 나스닥 종목 리스트 가져오기
 def get_nasdaq_tickers():
     nasdaq_url = "ftp://ftp.nasdaqtrader.com/SymbolDirectory/nasdaqlisted.txt"
     try:
-        # 나스닥 데이터 크롤링
         nasdaq_data = pd.read_csv(nasdaq_url, sep='|')
         tickers = nasdaq_data['Symbol'].dropna().tolist()
-        tickers = [ticker for ticker in tickers if ticker != 'Symbol']  # 헤더 제외
+        tickers = [ticker for ticker in tickers if ticker != 'Symbol']
         return tickers
     except Exception as e:
         print(f"Error fetching NASDAQ tickers: {e}")
         return []
 
-# 티커 데이터를 MongoDB에 저장
 def insert_ticker_data(ticker_symbol):
     try:
-        # yfinance에서 데이터 가져오기
         ticker = yf.Ticker(ticker_symbol)
         info = ticker.info
-        ohlcv_data = ticker.history(period="1mo", interval="1d")  # 지난 한 달간의 일봉 데이터
+        ohlcv_data = ticker.history(period="1mo", interval="1d")
 
-        # Step 1: Item 컬렉션에 데이터 삽입
         item_data = {
             "code": info.get("symbol"),
             "name": info.get("shortName"),
@@ -59,11 +78,10 @@ def insert_ticker_data(ticker_symbol):
         else:
             print(f"Item data for {ticker_symbol} already exists, skipping.")
 
-        # Step 2: OHLCV 컬렉션 데이터 삽입
         for timestamp, row in ohlcv_data.iterrows():
             ohlcv_data_row = {
                 "code": ticker_symbol,
-                "timestamp": timestamp.strftime("%Y-%m-%d"),  # UNIX timestamp
+                "timestamp": timestamp.strftime("%Y-%m-%d"),
                 "open": row["Open"],
                 "high": row["High"],
                 "low": row["Low"],
@@ -81,7 +99,6 @@ def insert_ticker_data(ticker_symbol):
             except errors.DuplicateKeyError:
                 continue
 
-        # Step 3: Fundamental 컬렉션 데이터 삽입
         fundamental_data = {
             "code": info.get("symbol"),
             "timestamp": convert_unix_to_datetime(info.get("mostRecentQuarter")),
@@ -112,7 +129,6 @@ def insert_ticker_data(ticker_symbol):
     except Exception as e:
         print(f"Error processing {ticker_symbol}: {e}")
 
-# 모든 나스닥 티커의 데이터를 가져오고 저장
 def fetch_and_store_all_tickers():
     tickers = get_nasdaq_tickers()
     print(f"Total NASDAQ tickers: {len(tickers)}")

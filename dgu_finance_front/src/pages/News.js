@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './News.css';
 
 function News() {
   const location = useLocation();
+  const navigate = useNavigate(); // 페이지 이동을 위한 navigate 함수
   const { code } = location.state || {}; // Item 페이지에서 전달된 종목 코드
   const [newsData, setNewsData] = useState([]); // 뉴스 데이터를 저장
   const [userName, setUserName] = useState(''); // 사용자 이름 저장
@@ -57,6 +58,10 @@ function News() {
     }
   };
 
+  const handleUserClick = () => {
+    navigate('/user'); // User 페이지로 이동
+  };
+
   return (
     <div className="news-container">
       {/* 헤더 */}
@@ -64,7 +69,9 @@ function News() {
         <h1 className="news-logo">DGU FINANCE</h1>
         <h2 className="news-title">NEWS</h2>
         <div className="header-right">
-          <span className="user-name">{userName}님</span>
+          <span className="user-name" onClick={handleUserClick} style={{ cursor: 'pointer' }}>
+            {userName}님
+          </span>
         </div>
       </header>
 

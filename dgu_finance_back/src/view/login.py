@@ -2,11 +2,12 @@ from flask import request, jsonify
 from flask_restx import Namespace, Resource
 from flask_cors import cross_origin
 from util.db import get_collection
+from bson import ObjectId
 
 login_ns = Namespace('login')
 
 @login_ns.route('/')
-class Signup(Resource):
+class Login(Resource):
     def options(self):
         """CORS 사전 요청 처리"""
         return {}, 200  # JSON 응답을 반환
@@ -47,3 +48,80 @@ class Signup(Resource):
         except Exception as e:
             print(f"Error during login: {e}")
             return {"error": True, "message": "An error occurred during login"}, 500
+
+@login_ns.route('/update/<string:user_id>')
+class UpdateUser(Resource):
+    @cross_origin(methods=["PATCH", "OPTIONS"]) 
+    def patch(self, user_id):
+        try:
+            # 요청 데이터 가져오기
+            data = request.get_json()
+            print(f"Received update data: {data}")
+
+            # MongoDB 컬렉션 연결
+            col = get_collection('user')
+
+            # ObjectId로 user 찾기
+            try:
+                user = col.find_one({"_id": ObjectId(user_id)})
+            except Exception:
+                return {"error": True, "message": "Invalid user ID format"}, 400
+
+            if not user:
+                return {"error": True, "message": "User not found"}, 404
+
+            # 중복 데이터 확인
+            if data.get("username"):
+                duplicate_username = col.find_one({
+                    "username": data["username"],
+                    "_id": {"$ne": ObjectId(user_id)}  # 현재 user_id는 제외
+                })
+                if duplicate_username:
+                    return {
+                        "error": True,
+                        "message": f"Username '{data['username']}' is already in use."
+                    }, 400
+
+            if data.get("password"):
+                duplicate_password = col.find_one({
+                    "password": data["password"],
+                    "_id": {"$ne": ObjectId(user_id)}  # 현재 user_id는 제외
+                })
+                if duplicate_password:
+                    return {
+                        "error": True,
+                        "message": "Password is already in use by another account."
+                    }, 400
+
+            # 업데이트 데이터 준비
+            update_fields = {}
+            if data.get("username"):
+                update_fields["username"] = data["username"]
+            if data.get("name"):
+                update_fields["name"] = data["name"]
+            if data.get("phone"):  # 중복 확인 없음
+                update_fields["phone"] = data["phone"]
+            if data.get("password"):
+                update_fields["password"] = data["password"]
+
+            if not update_fields:
+                return {"error": True, "message": "No valid fields to update"}, 400
+
+            # 데이터베이스 업데이트
+            result = col.update_one({"_id": ObjectId(user_id)}, {"$set": update_fields})
+
+            if result.modified_count == 0:
+                return {"error": True, "message": "No changes made"}, 400
+
+            # 업데이트된 데이터 가져오기
+            updated_user = col.find_one({"_id": ObjectId(user_id)}, {"password": 0})  # 보안상의 이유로 password 제외
+
+            return {
+                "error": False,
+                "message": "User updated successfully",
+                "user": updated_user  
+            }, 200
+
+        except Exception as e:
+            print(f"Error during user update: {e}")
+            return {"error": True, "message": "An error occurred during user update"}, 500

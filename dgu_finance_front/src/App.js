@@ -6,6 +6,8 @@ import Signup from './pages/Signup';
 import Main from './pages/Main'; 
 import Item from './pages/Item';
 import News from './pages/News';
+import User from './pages/User';
+import Edit from './pages/Edit';
 
 function App() {
   const navigate = useNavigate(); // useNavigate 훅 사용
@@ -41,6 +43,8 @@ function AppWrapper() {
         <Route path="/main" element={<Main />} />
         <Route path="/item" element={<Item />} />
         <Route path="/news" element={<News />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/edit" element={<Edit />} />
       </Routes>
     </Router>
   );

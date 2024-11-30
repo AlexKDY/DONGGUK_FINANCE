@@ -1,0 +1,88 @@
+/* 전체 컨테이너 */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* 제목 스타일 */
+  .login-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: orange;
+    margin-bottom: 20px;
+  }
+  
+  /* 폼 스타일 */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    gap: 15px;
+  }
+  
+  /* 입력 필드 스타일 */
+  .login-input {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 입력 필드 포커스 */
+  .login-input:focus {
+    outline: none;
+    border-color: orange;
+    box-shadow: 0 0 5px orange;
+  }
+  
+  /* 버튼 스타일 */
+  .login-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: orange;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 버튼 호버 효과 */
+  .login-button:hover {
+    background-color: darkorange;
+  }
+  
+  /* 입력 필드 간격 */
+  .login-form input + input {
+    margin-top: 10px;
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 20px;
+    }
+  
+    .login-form {
+      width: 100%;
+    }
+  
+    .login-input {
+      font-size: 14px;
+    }
+  
+    .login-button {
+      font-size: 14px;
+      padding: 10px 15px;
+    }
+  }
+  

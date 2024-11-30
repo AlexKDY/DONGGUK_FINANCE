@@ -43,7 +43,7 @@ app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 CORS(
     app,
     resources={r"/api/*": {"origins": "*"}},  # /api/* 경로에 대해 모든 출처 허용
-    methods=["OPTIONS", "GET", "POST"],  # 허용 메소드 추가
+    methods=["OPTIONS", "GET", "POST", "PATCH", "DELETE"],  # 허용 메소드 추가
     supports_credentials=True
 )
 

@@ -53,7 +53,6 @@ function Main() {
         alert(response.data.message);
       } else {
         setSearchResults(response.data.data); // 검색 결과 저장
-        alert('검색 결과를 확인하세요!');
       }
     } catch (error) {
       console.error('Failed to search item:', error);
@@ -120,13 +119,19 @@ function Main() {
     navigate('/item', { state: { item: { code: stock } } });
   };
 
+  const handleUserClick = () => {
+    navigate('/user'); // User 페이지로 이동
+  };
+
   return (
     <div className="main-container">
       {/* 헤더 */}
       <header className="main-header">
         <h1 className="main-logo">DGU FINANCE</h1>
         <div className="header-right">
-          <span className="user-name">{name}님</span>
+          <span className="user-name" onClick={handleUserClick} style={{ cursor: 'pointer' }}>
+            {name}님
+            </span>
         </div>
       </header>
 
