@@ -6,6 +6,14 @@ from bson import ObjectId
 
 login_ns = Namespace('login')
 
+COLLECTION_SCHEMA = {
+    "username": {"type": "string", "minlength": 8, "required": True},
+    "name": {"type": "string", "required": True},
+    "phone": {"type": "string", "pattern": r"^\d{3}-\d{4}-\d{4}$", "required": True},
+    "password": {"type": "string", "minlength": 8, "required": True},
+}
+
+
 @login_ns.route('/')
 class Login(Resource):
     def options(self):
@@ -48,6 +56,36 @@ class Login(Resource):
         except Exception as e:
             print(f"Error during login: {e}")
             return {"error": True, "message": "An error occurred during login"}, 500
+        
+
+def validate_data(data):
+    """입력 데이터 유효성 검사"""
+    errors = {}
+    for field, rules in COLLECTION_SCHEMA.items():
+        value = data.get(field)
+
+        # 필수 필드 검사
+        if rules.get("required") and not value:
+            errors[field] = f"{field} is required."
+            continue
+
+        # 타입 검사
+        if value and rules.get("type") and not isinstance(value, str):
+            errors[field] = f"{field} must be a string."
+            continue
+
+        # 길이 검사
+        if value and rules.get("minlength") and len(value) < rules["minlength"]:
+            errors[field] = f"{field} must be at least {rules['minlength']} characters long."
+            continue
+
+        # 정규식 검사
+        if value and rules.get("pattern"):
+            import re
+            if not re.match(rules["pattern"], value):
+                errors[field] = f"{field} format is invalid."
+    
+    return errors
 
 @login_ns.route('/update/<string:user_id>')
 class UpdateUser(Resource):
@@ -57,6 +95,18 @@ class UpdateUser(Resource):
             # 요청 데이터 가져오기
             data = request.get_json()
             print(f"Received update data: {data}")
+
+            if not data:
+                raise ValueError("No data received")
+
+            # 데이터 유효성 검사 호출
+            validation_errors = validate_data(data)
+            if validation_errors:
+                return {
+                    "error": True,
+                    "message": "회원가입 조건을 확인하세요!",
+                    "details": validation_errors
+                }, 400
 
             # MongoDB 컬렉션 연결
             col = get_collection('user')
